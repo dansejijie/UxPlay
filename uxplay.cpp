@@ -59,8 +59,8 @@
 #include "lib/stream.h"
 #include "lib/logger.h"
 #include "lib/dnssd.h"
-#include "renderers/video_renderer.h"
-#include "renderers/audio_renderer.h"
+// #include "renderers/video_renderer.h"
+// #include "renderers/audio_renderer.h"
 
 #define VERSION "1.71"
 
@@ -92,7 +92,7 @@ static bool reset_loop = false;
 static unsigned int open_connections= 0;
 static std::string videosink = "autovideosink";
 static std::string videosink_options = "";
-static videoflip_t videoflip[2] = { NONE , NONE };
+// static videoflip_t videoflip[2] = { NONE , NONE };
 static bool use_video = true;
 static unsigned char compression_type = 0;
 static std::string audiosink = "autoaudiosink";
@@ -372,15 +372,15 @@ static gboolean reset_callback(gpointer loop) {
     return TRUE;
 }
 
-static gboolean x11_window_callback(gpointer loop) {
-    /* called while trying to find an x11 window used by playbin (HLS mode) */
-    if (waiting_for_x11_window()) {
-        return TRUE;
-    }
-    g_source_remove(gst_x11_window_id);
-    gst_x11_window_id = 0;
-    return FALSE;
-}
+// static gboolean x11_window_callback(gpointer loop) {
+//     /* called while trying to find an x11 window used by playbin (HLS mode) */
+//     if (waiting_for_x11_window()) {
+//         return TRUE;
+//     }
+//     g_source_remove(gst_x11_window_id);
+//     gst_x11_window_id = 0;
+//     return FALSE;
+// }
 
 static gboolean sigint_callback(gpointer loop) {
     relaunch_video = false;
@@ -420,23 +420,23 @@ static void main_loop()  {
     g_assert(n_renderers <= 2);
     GMainLoop *loop = g_main_loop_new(NULL,FALSE);
     relaunch_video = false;
-    if (use_video) {
-        relaunch_video = true;
-        if (url.empty()) {
-            n_renderers = h265_support ? 2 : 1;
-            gst_x11_window_id = 0;           
-        } else {
-            /* hls video will be rendered */
-	    n_renderers = 1;
-            url.erase();
-            gst_x11_window_id = g_timeout_add(100, (GSourceFunc) x11_window_callback, (gpointer) loop);
-        }
-        for (int i = 0; i < n_renderers; i++) {
-            gst_bus_watch_id[i] = (guint) video_renderer_listen((void *)loop, i);
-        }
-    }
+    // if (use_video) {
+    //     relaunch_video = true;
+    //     if (url.empty()) {
+    //         n_renderers = h265_support ? 2 : 1;
+    //         gst_x11_window_id = 0;           
+    //     } else {
+    //         /* hls video will be rendered */
+	//     n_renderers = 1;
+    //         url.erase();
+    //         gst_x11_window_id = g_timeout_add(100, (GSourceFunc) x11_window_callback, (gpointer) loop);
+    //     }
+    //     for (int i = 0; i < n_renderers; i++) {
+    //         gst_bus_watch_id[i] = (guint) video_renderer_listen((void *)loop, i);
+    //     }
+    // }
     guint reset_watch_id = g_timeout_add(100, (GSourceFunc) reset_callback, (gpointer) loop);
-    guint video_reset_watch_id = g_timeout_add(100, (GSourceFunc) video_reset_callback, (gpointer) loop);
+    // guint video_reset_watch_id = g_timeout_add(100, (GSourceFunc) video_reset_callback, (gpointer) loop);
     guint sigterm_watch_id = g_unix_signal_add(SIGTERM, (GSourceFunc) sigterm_callback, (gpointer) loop);
     guint sigint_watch_id = g_unix_signal_add(SIGINT, (GSourceFunc) sigint_callback, (gpointer) loop);
     g_main_loop_run(loop);
@@ -448,7 +448,7 @@ static void main_loop()  {
     if (sigint_watch_id > 0) g_source_remove(sigint_watch_id);
     if (sigterm_watch_id > 0) g_source_remove(sigterm_watch_id);
     if (reset_watch_id > 0) g_source_remove(reset_watch_id);
-    if (video_reset_watch_id > 0) g_source_remove(video_reset_watch_id);
+    // if (video_reset_watch_id > 0) g_source_remove(video_reset_watch_id);
     g_main_loop_unref(loop);
 }    
 
@@ -769,38 +769,38 @@ static bool get_ports (int nports, std::string option, const char * value, unsig
     return false;
 }
 
-static bool get_videoflip (const char *str, videoflip_t *videoflip) {
-    if (strlen(str) > 1) return false;
-    switch (str[0]) {
-        case 'I':
-            *videoflip = INVERT;
-            break;
-        case 'H':
-            *videoflip = HFLIP;
-            break;
-        case 'V':
-            *videoflip = VFLIP;
-            break;
-        default:
-            return false;
-    }
-    return true;
-}
+// static bool get_videoflip (const char *str, videoflip_t *videoflip) {
+//     if (strlen(str) > 1) return false;
+//     switch (str[0]) {
+//         case 'I':
+//             *videoflip = INVERT;
+//             break;
+//         case 'H':
+//             *videoflip = HFLIP;
+//             break;
+//         case 'V':
+//             *videoflip = VFLIP;
+//             break;
+//         default:
+//             return false;
+//     }
+//     return true;
+// }
 
-static bool get_videorotate (const char *str, videoflip_t *videoflip) {
-    if (strlen(str) > 1) return false;
-    switch (str[0]) {
-        case 'L':
-            *videoflip = LEFT;
-            break;
-        case 'R':
-            *videoflip = RIGHT;
-            break;
-        default:
-            return false;
-    }
-    return true;
-}
+// static bool get_videorotate (const char *str, videoflip_t *videoflip) {
+//     if (strlen(str) > 1) return false;
+//     switch (str[0]) {
+//         case 'L':
+//             *videoflip = LEFT;
+//             break;
+//         case 'R':
+//             *videoflip = RIGHT;
+//             break;
+//         default:
+//             return false;
+//     }
+//     return true;
+// }
 
 static void append_hostname(std::string &server_name) {
 #ifdef _WIN32   /*modification for compilation on Windows */
@@ -909,16 +909,16 @@ static void parse_arguments (int argc, char *argv[]) {
             display[4] = 1;
         } else if (arg == "-f") {
             if (!option_has_value(i, argc, arg, argv[i+1])) exit(1);
-            if (!get_videoflip(argv[++i], &videoflip[0])) {
-                fprintf(stderr,"invalid \"-f %s\" , unknown flip type, choices are H, V, I\n",argv[i]);
-                exit(1);
-            }
+            // if (!get_videoflip(argv[++i], &videoflip[0])) {
+            //     fprintf(stderr,"invalid \"-f %s\" , unknown flip type, choices are H, V, I\n",argv[i]);
+            //     exit(1);
+            // }
         } else if (arg == "-r") {
             if (!option_has_value(i, argc, arg, argv[i+1])) exit(1);
-            if (!get_videorotate(argv[++i], &videoflip[1])) {
-                fprintf(stderr,"invalid \"-r %s\" , unknown rotation  type, choices are R, L\n",argv[i]);
-                exit(1);
-            }
+            // if (!get_videorotate(argv[++i], &videoflip[1])) {
+            //     fprintf(stderr,"invalid \"-r %s\" , unknown rotation  type, choices are R, L\n",argv[i]);
+            //     exit(1);
+            // }
         } else if (arg == "-p") {
             if (i == argc - 1 || argv[i + 1][0] == '-') {
                 tcp[0] = 7100; tcp[1] = 7000; tcp[2] = 7001;
@@ -1536,10 +1536,10 @@ extern "C" void video_reset(void *cls) {
 }
 
 extern "C" void video_set_codec(void *cls, video_codec_t codec) {
-    if (use_video) {
-        bool video_is_h265 = (codec == VIDEO_CODEC_H265); 
-        video_renderer_choose_codec(video_is_h265);
-    }
+    // if (use_video) {
+    //     bool video_is_h265 = (codec == VIDEO_CODEC_H265); 
+    //     video_renderer_choose_codec(video_is_h265);
+    // }
 }
 
 extern "C" void display_pin(void *cls, char *pin) {
@@ -1578,9 +1578,9 @@ extern "C" void conn_destroy (void *cls) {
     LOGD("Open connections: %i", open_connections);
     if (open_connections == 0) {
         remote_clock_offset = 0;
-        if (use_audio) {
-            audio_renderer_stop();
-        }
+        // if (use_audio) {
+        //     audio_renderer_stop();
+        // }
         if (dacpfile.length()) {
             remove (dacpfile.c_str());
         }    
@@ -1628,66 +1628,66 @@ extern "C" void audio_process (void *cls, raop_ntp_t *ntp, audio_decode_struct *
     if (dump_audio) {
         dump_audio_to_file(data->data, data->data_len, (data->data)[0] & 0xf0);
     }
-    if (use_audio) {
-        if (!remote_clock_offset) {
-            remote_clock_offset = data->ntp_time_local - data->ntp_time_remote;
-        }
-        data->ntp_time_remote = data->ntp_time_remote + remote_clock_offset;
-        switch (data->ct) {
-        case 2:
-            if (audio_delay_alac) {
-                data->ntp_time_remote = (uint64_t) ((int64_t) data->ntp_time_remote + audio_delay_alac);
-            }
-            break;
-        case 4:
-        case 8:
-            if (audio_delay_aac) {
-                data->ntp_time_remote = (uint64_t) ((int64_t) data->ntp_time_remote + audio_delay_aac);
-            }
-            break;
-        default:
-            break;
-        }
-        audio_renderer_render_buffer(data->data, &(data->data_len), &(data->seqnum), &(data->ntp_time_remote));
-    }
+    // if (use_audio) {
+    //     if (!remote_clock_offset) {
+    //         remote_clock_offset = data->ntp_time_local - data->ntp_time_remote;
+    //     }
+    //     data->ntp_time_remote = data->ntp_time_remote + remote_clock_offset;
+    //     switch (data->ct) {
+    //     case 2:
+    //         if (audio_delay_alac) {
+    //             data->ntp_time_remote = (uint64_t) ((int64_t) data->ntp_time_remote + audio_delay_alac);
+    //         }
+    //         break;
+    //     case 4:
+    //     case 8:
+    //         if (audio_delay_aac) {
+    //             data->ntp_time_remote = (uint64_t) ((int64_t) data->ntp_time_remote + audio_delay_aac);
+    //         }
+    //         break;
+    //     default:
+    //         break;
+    //     }
+    //     audio_renderer_render_buffer(data->data, &(data->data_len), &(data->seqnum), &(data->ntp_time_remote));
+    // }
 }
 
 extern "C" void video_process (void *cls, raop_ntp_t *ntp, video_decode_struct *data) {
     if (dump_video) {
         dump_video_to_file(data->data, data->data_len);
     }
-    if (use_video) {
-        if (!remote_clock_offset) {
-            remote_clock_offset = data->ntp_time_local - data->ntp_time_remote;
-        }
-        data->ntp_time_remote = data->ntp_time_remote + remote_clock_offset;
-        video_renderer_render_buffer(data->data, &(data->data_len), &(data->nal_count), &(data->ntp_time_remote));
-    }
+    // if (use_video) {
+    //     if (!remote_clock_offset) {
+    //         remote_clock_offset = data->ntp_time_local - data->ntp_time_remote;
+    //     }
+    //     data->ntp_time_remote = data->ntp_time_remote + remote_clock_offset;
+    //     video_renderer_render_buffer(data->data, &(data->data_len), &(data->nal_count), &(data->ntp_time_remote));
+    // }
 }
 
 extern "C" void video_pause (void *cls) {
-    if (use_video) {
-        video_renderer_pause();
-    }
+    // if (use_video) {
+    //     video_renderer_pause();
+    // }
 }
 
 extern "C" void video_resume (void *cls) {
-    if (use_video) {
-        video_renderer_resume();
-    }
+    // if (use_video) {
+    //     video_renderer_resume();
+    // }
 }
 
 
 extern "C" void audio_flush (void *cls) {
-    if (use_audio) {
-        audio_renderer_flush();
-    }
+    // if (use_audio) {
+    //     audio_renderer_flush();
+    // }
 }
 
 extern "C" void video_flush (void *cls) {
-    if (use_video) {
-        video_renderer_flush();
-    }
+    // if (use_video) {
+    //     video_renderer_flush();
+    // }
 }
 
 extern "C" void audio_set_volume (void *cls, float volume) {
@@ -1695,44 +1695,44 @@ extern "C" void audio_set_volume (void *cls, float volume) {
     if (!use_audio) {
       return;
     }
-    /* convert from AirPlay dB  volume in range {-30dB : 0dB}, to GStreamer volume */
-    if (volume == -144.0f) {   /* AirPlay "mute" signal */
-        frac = 0.0;
-    } else if (volume < -30.0f) {
-        LOGE(" invalid AirPlay volume %f", volume);
-        frac = 0.0;
-    } else if (volume > 0.0f) {
-        LOGE(" invalid AirPlay volume %f", volume);
-        frac = 1.0;
-    } else if (volume == -30.0f) {
-        frac = 0.0;
-    } else if (volume == 0.0f) {
-        frac = 1.0;
-    } else {
-        frac = (double) ( (30.0f + volume) / 30.0f);
-        frac = (frac > 1.0) ? 1.0 : frac;
-    }
+    // /* convert from AirPlay dB  volume in range {-30dB : 0dB}, to GStreamer volume */
+    // if (volume == -144.0f) {   /* AirPlay "mute" signal */
+    //     frac = 0.0;
+    // } else if (volume < -30.0f) {
+    //     LOGE(" invalid AirPlay volume %f", volume);
+    //     frac = 0.0;
+    // } else if (volume > 0.0f) {
+    //     LOGE(" invalid AirPlay volume %f", volume);
+    //     frac = 1.0;
+    // } else if (volume == -30.0f) {
+    //     frac = 0.0;
+    // } else if (volume == 0.0f) {
+    //     frac = 1.0;
+    // } else {
+    //     frac = (double) ( (30.0f + volume) / 30.0f);
+    //     frac = (frac > 1.0) ? 1.0 : frac;
+    // }
 
-    /* frac is length of volume slider as fraction of max length */
-    /* also (steps/16) where steps is number of discrete steps above mute (16 = full volume) */
-    if (frac == 0.0) {
-        gst_volume = 0.0;
-    } else {
-      /* flat rescaling of decibel range from {-30dB : 0dB} to {db_low : db_high} */  
-        db_flat = db_low + (db_high-db_low) * frac;
-        if (taper_volume) {
-          /* taper the volume reduction by the (rescaled) Airplay {-30:0} range so each reduction of
-	   * the remaining slider length by 50% reduces the perceived volume by 50% (-10dB gain)
-           * (This is the "dasl-tapering" scheme offered by shairport-sync) */
-            db = db_high + 10.0 * (log10(frac) / log10(2.0));
-            db = (db  > db_flat) ? db : db_flat;
-         } else {
-            db = db_flat;
-        }
-	/* conversion from (gain) decibels to GStreamer's linear volume scale */
-        gst_volume = pow(10.0, 0.05*db);
-    }
-    audio_renderer_set_volume(gst_volume);
+    // /* frac is length of volume slider as fraction of max length */
+    // /* also (steps/16) where steps is number of discrete steps above mute (16 = full volume) */
+    // if (frac == 0.0) {
+    //     gst_volume = 0.0;
+    // } else {
+    //   /* flat rescaling of decibel range from {-30dB : 0dB} to {db_low : db_high} */  
+    //     db_flat = db_low + (db_high-db_low) * frac;
+    //     if (taper_volume) {
+    //       /* taper the volume reduction by the (rescaled) Airplay {-30:0} range so each reduction of
+	//    * the remaining slider length by 50% reduces the perceived volume by 50% (-10dB gain)
+    //        * (This is the "dasl-tapering" scheme offered by shairport-sync) */
+    //         db = db_high + 10.0 * (log10(frac) / log10(2.0));
+    //         db = (db  > db_flat) ? db : db_flat;
+    //      } else {
+    //         db = db_flat;
+    //     }
+	// /* conversion from (gain) decibels to GStreamer's linear volume scale */
+    //     gst_volume = pow(10.0, 0.05*db);
+    // }
+    // audio_renderer_set_volume(gst_volume);
 }
 
 extern "C" void audio_get_format (void *cls, unsigned char *ct, unsigned short *spf, bool *usingScreen, bool *isMedia, uint64_t *audioFormat) {
@@ -1755,9 +1755,9 @@ extern "C" void audio_get_format (void *cls, unsigned char *ct, unsigned short *
     }
     audio_type = type;
     
-    if (use_audio) {
-      audio_renderer_start(ct);
-    }
+    // if (use_audio) {
+    //   audio_renderer_start(ct);
+    // }
 
     if (coverart_filename.length()) {
         write_coverart(coverart_filename.c_str(), (const void *) empty_image, sizeof(empty_image));
@@ -1765,9 +1765,9 @@ extern "C" void audio_get_format (void *cls, unsigned char *ct, unsigned short *
 }
 
 extern "C" void video_report_size(void *cls, float *width_source, float *height_source, float *width, float *height) {
-    if (use_video) {
-        video_renderer_size(width_source, height_source, width, height);
-    }
+    // if (use_video) {
+    //     video_renderer_size(width_source, height_source, width, height);
+    // }
 }
 
 extern "C" void audio_set_coverart(void *cls, const void *buffer, int buflen) {
@@ -1870,18 +1870,18 @@ extern "C" void on_video_play(void *cls, const char* location, const float start
 
 extern "C" void on_video_scrub(void *cls, const float position) {
     LOGI("on_video_scrub: position = %7.5f\n", position);
-    video_renderer_seek(position);
+    // video_renderer_seek(position);
 }
 
 extern "C" void on_video_rate(void *cls, const float rate) {
-    LOGI("on_video_rate = %7.5f\n", rate);
-    if (rate == 1.0f) {
-        video_renderer_resume();
-    } else if (rate ==  0.0f) {
-        video_renderer_pause();
-    } else  {
-        LOGI("on_video_rate: ignoring unexpected value rate = %f\n", rate);
-    }
+    // LOGI("on_video_rate = %7.5f\n", rate);
+    // if (rate == 1.0f) {
+    //     video_renderer_resume();
+    // } else if (rate ==  0.0f) {
+    //     video_renderer_pause();
+    // } else  {
+    //     LOGI("on_video_rate: ignoring unexpected value rate = %f\n", rate);
+    // }
 }
 
 extern "C" void on_video_stop(void *cls) {
@@ -1889,17 +1889,17 @@ extern "C" void on_video_stop(void *cls) {
 }
 
 extern "C" void on_video_acquire_playback_info (void *cls, playback_info_t *playback_info) {
-    int buffering_level;
-    LOGD("on_video_acquire_playback info\n");
-    bool still_playing = video_get_playback_info(&playback_info->duration, &playback_info->position,
-                                                 &playback_info->rate);
-    LOGD("on_video_acquire_playback info done\n");
-    if (!still_playing) {
-        LOGI(" video has finished, %f", playback_info->position);
-        playback_info->position = -1.0;
-        playback_info->duration = -1.0;
-        video_renderer_stop();
-    }
+    // int buffering_level;
+    // LOGD("on_video_acquire_playback info\n");
+    // bool still_playing = video_get_playback_info(&playback_info->duration, &playback_info->position,
+    //                                              &playback_info->rate);
+    // LOGD("on_video_acquire_playback info done\n");
+    // if (!still_playing) {
+    //     LOGI(" video has finished, %f", playback_info->position);
+    //     playback_info->position = -1.0;
+    //     playback_info->duration = -1.0;
+    //     video_renderer_stop();
+    // }
 }
 
 extern "C" void log_callback (void *cls, int level, const char *msg) {
@@ -2168,32 +2168,32 @@ int main (int argc, char *argv[]) {
         display[3] = 1; /* set fps to 1 frame per sec when no video will be shown */
     }
 
-    if (fullscreen && use_video) {
-        if (videosink == "waylandsink" || videosink == "vaapisink") {
-            videosink_options.append(" fullscreen=true");
-	}
-    }
+    // if (fullscreen && use_video) {
+    //     if (videosink == "waylandsink" || videosink == "vaapisink") {
+    //         videosink_options.append(" fullscreen=true");
+	// }
+    // }
 
-    if (videosink == "d3d11videosink" && videosink_options.empty() && use_video) {
-        if (fullscreen) {
-            videosink_options.append(" fullscreen-toggle-mode=GST_D3D11_WINDOW_FULLSCREEN_TOGGLE_MODE_PROPERTY fullscreen=true ");
-        } else {
-            videosink_options.append(" fullscreen-toggle-mode=GST_D3D11_WINDOW_FULLSCREEN_TOGGLE_MODE_ALT_ENTER ");
-        }
-        LOGI("d3d11videosink is being used with option fullscreen-toggle-mode=alt-enter\n"
-               "Use Alt-Enter key combination to toggle into/out of full-screen mode");
-    }
+    // if (videosink == "d3d11videosink" && videosink_options.empty() && use_video) {
+    //     if (fullscreen) {
+    //         videosink_options.append(" fullscreen-toggle-mode=GST_D3D11_WINDOW_FULLSCREEN_TOGGLE_MODE_PROPERTY fullscreen=true ");
+    //     } else {
+    //         videosink_options.append(" fullscreen-toggle-mode=GST_D3D11_WINDOW_FULLSCREEN_TOGGLE_MODE_ALT_ENTER ");
+    //     }
+    //     LOGI("d3d11videosink is being used with option fullscreen-toggle-mode=alt-enter\n"
+    //            "Use Alt-Enter key combination to toggle into/out of full-screen mode");
+    // }
 
-    if (bt709_fix && use_video) {
-        video_parser.append(" ! ");
-        video_parser.append(BT709_FIX);
-    }
+    // if (bt709_fix && use_video) {
+    //     video_parser.append(" ! ");
+    //     video_parser.append(BT709_FIX);
+    // }
 
-    if (srgb_fix && use_video) {
-        std::string option = video_converter;
-        video_converter.append(SRGB_FIX);
-        video_converter.append(option);
-    }
+    // if (srgb_fix && use_video) {
+    //     std::string option = video_converter;
+    //     video_converter.append(SRGB_FIX);
+    //     video_converter.append(option);
+    // }
     
     if (require_password && registration_list) {
         if (pairing_register == "") {
@@ -2246,26 +2246,26 @@ int main (int argc, char *argv[]) {
         append_hostname(server_name);
     }
 
-    if (!gstreamer_init()) {
-        LOGE ("stopping");
-        exit (1);
-    }
+    // if (!gstreamer_init()) {
+    //     LOGE ("stopping");
+    //     exit (1);
+    // }
 
     render_logger = logger_init();
     logger_set_callback(render_logger, log_callback, NULL);
     logger_set_level(render_logger, log_level);
 
-    if (use_audio) {
-      audio_renderer_init(render_logger, audiosink.c_str(), &audio_sync, &video_sync);
-    } else {
-        LOGI("audio_disabled");
-    }
-    if (use_video) {
-        video_renderer_init(render_logger, server_name.c_str(), videoflip, video_parser.c_str(),
-                            video_decoder.c_str(), video_converter.c_str(), videosink.c_str(),
-                            videosink_options.c_str(), fullscreen, video_sync, h265_support, NULL);
-        video_renderer_start();
-    }
+    // if (use_audio) {
+    //   audio_renderer_init(render_logger, audiosink.c_str(), &audio_sync, &video_sync);
+    // } else {
+    //     LOGI("audio_disabled");
+    // }
+    // if (use_video) {
+    //     video_renderer_init(render_logger, server_name.c_str(), videoflip, video_parser.c_str(),
+    //                         video_decoder.c_str(), video_converter.c_str(), videosink.c_str(),
+    //                         videosink_options.c_str(), fullscreen, video_sync, h265_support, NULL);
+    //     video_renderer_start();
+    // }
 
     if (udp[0]) {
         LOGI("using network ports UDP %d %d %d TCP %d %d %d", udp[0], udp[1], udp[2], tcp[0], tcp[1], tcp[2]);
@@ -2326,21 +2326,21 @@ int main (int argc, char *argv[]) {
         } else {
             raop_stop(raop);
         }
-        if (use_audio) audio_renderer_stop();
-        if (use_video && (close_window || preserve_connections)) {
-            video_renderer_destroy();
-            if (!preserve_connections) {
-                raop_destroy_airplay_video(raop);
-                url.erase();
-                raop_remove_known_connections(raop);
-            }
-	    preserve_connections = false;
-	    const char *uri = (url.empty() ? NULL : url.c_str());
-            video_renderer_init(render_logger, server_name.c_str(), videoflip, video_parser.c_str(),
-                                video_decoder.c_str(), video_converter.c_str(), videosink.c_str(),
-                                videosink_options.c_str(), fullscreen, video_sync, h265_support, uri);
-            video_renderer_start();
-        }
+        // if (use_audio) audio_renderer_stop();
+        // if (use_video && (close_window || preserve_connections)) {
+        //     video_renderer_destroy();
+        //     if (!preserve_connections) {
+        //         raop_destroy_airplay_video(raop);
+        //         url.erase();
+        //         raop_remove_known_connections(raop);
+        //     }
+	    // preserve_connections = false;
+	    // const char *uri = (url.empty() ? NULL : url.c_str());
+        //     video_renderer_init(render_logger, server_name.c_str(), videoflip, video_parser.c_str(),
+        //                         video_decoder.c_str(), video_converter.c_str(), videosink.c_str(),
+        //                         videosink_options.c_str(), fullscreen, video_sync, h265_support, uri);
+        //     video_renderer_start();
+        // }
         if (relaunch_video) {
             unsigned short port = raop_get_port(raop);
             raop_start(raop, &port);
@@ -2358,12 +2358,12 @@ int main (int argc, char *argv[]) {
         stop_dnssd();
     }
     cleanup:
-    if (use_audio) {
-        audio_renderer_destroy();
-    }
-    if (use_video)  {
-        video_renderer_destroy();
-    }
+    // if (use_audio) {
+    //     audio_renderer_destroy();
+    // }
+    // if (use_video)  {
+    //     video_renderer_destroy();
+    // }
     logger_destroy(render_logger);
     render_logger = NULL;
     if(audio_dumpfile) {
