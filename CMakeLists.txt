@@ -9,8 +9,21 @@ project( uxplay )
 message( STATUS "Project name: " ${PROJECT_NAME} )
 
 include(GNUInstallDirs)
+find_package(PkgConfig REQUIRED)
+
+# 设置 PKG_CONFIG_PATH
+if (APPLE)
+  set( ENV{PKG_CONFIG_PATH} "/opt/homebrew/lib/pkgconfig" )
+  set( ENV{PKG_CONFIG_PATH} "$ENV{PKG_CONFIG_PATH}:/usr/local/lib/pkgconfig" )
+  message( "PKG_CONFIG_PATH = " $ENV{PKG_CONFIG_PATH} )
+endif()
 
 set ( CMAKE_CXX_STANDARD 11 )
+
+# 添加 glib 配置
+pkg_check_modules(GLIB REQUIRED glib-2.0)
+include_directories(${GLIB_INCLUDE_DIRS})
+link_directories(${GLIB_LIBRARY_DIRS})
 
 if (ZOOMFIX )
   message (STATUS "cmake option ZOOMFIX is no longer used (if needed, ZOOMFIX is automatically applied if X11 libraries are present)" )
@@ -42,17 +55,12 @@ endif()
 add_subdirectory( lib/llhttp )
 add_subdirectory( lib/playfair )
 add_subdirectory( lib )
-add_subdirectory( renderers )
 
-if  ( GST_MACOS )
-     add_definitions( -DGST_MACOS )
-     message ( STATUS "define GST_MACOS" )
-endif()
 
 add_executable( uxplay uxplay.cpp )
 target_link_libraries( uxplay
-                   renderers
                    airplay
+                   ${GLIB_LIBRARIES}
 		   )
 
 install( TARGETS  uxplay RUNTIME DESTINATION bin )
