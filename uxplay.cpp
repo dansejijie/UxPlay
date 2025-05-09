@@ -2092,21 +2092,21 @@ static void read_config_file(const char * filename, const char * uxplay_name) {
         free (argv);
     }
 }
-#ifdef GST_MACOS
-/* workaround for GStreamer >= 1.22 "Official Builds" on macOS */
-#include <TargetConditionals.h>
-#include <gst/gstmacos.h>
-void real_main (int argc, char *argv[]);
+// #ifdef GST_MACOS
+// /* workaround for GStreamer >= 1.22 "Official Builds" on macOS */
+// #include <TargetConditionals.h>
+// // #include <gst/gstmacos.h>
+// void real_main (int argc, char *argv[]);
 
-int main (int argc, char *argv[]) {
-    LOGI("*=== Using gst_macos_main wrapper for GStreamer >= 1.22 on macOS ===*");
-    return  gst_macos_main ((GstMainFunc) real_main, argc, argv , NULL);
-}
+// int main (int argc, char *argv[]) {
+//     LOGI("*=== Using gst_macos_main wrapper for GStreamer >= 1.22 on macOS ===*");
+//     return  gst_macos_main ((GstMainFunc) real_main, argc, argv , NULL);
+// }
 
-void real_main (int argc, char *argv[]) {
-#else
+// void real_main (int argc, char *argv[]) {
+// #else
 int main (int argc, char *argv[]) {
-#endif
+// #endif
     std::vector<char> server_hw_addr;
     std::string config_file = "";
 
