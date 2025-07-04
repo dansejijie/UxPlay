@@ -2132,6 +2132,9 @@ int main (int argc, char *argv[]) {
     }
 #endif
 
+    // 设置stdout stderr为无缓冲, Node spawn 时, 需要使用
+    setbuf(stdout, NULL);
+    setbuf(stderr, NULL);
     LOGI("UxPlay %s: An Open-Source AirPlay mirroring and audio-streaming server.", VERSION);
 
     if (audiosink == "0") {
